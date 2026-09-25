@@ -494,6 +494,7 @@ official_apple_pay_merchants = [
 official_bundle_ids = [
     "ph.telegra.Telegraph",
     "org.telegram.Telegram-iOS",
+    telegram_bundle_id,
 ]
 
 store_bundle_ids = [

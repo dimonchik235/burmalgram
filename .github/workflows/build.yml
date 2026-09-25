@@ -75,6 +75,16 @@ jobs:
           echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
 
           python3 build-system/Make/ImportCertificates.py --path build-system/fake-codesigning/certs
+          BUNDLE_ID=$(python3 -c 'import json; print(json.load(open("build-system/burmalgram-configuration.json"))["bundle_id"])')
+          echo "Generating provisioning profiles for $BUNDLE_ID..."
+          mkdir -p build-system/fake-codesigning/gen-profiles
+          python3 build-system/Make/GenerateProfiles.py \
+            --source build-system/fake-codesigning/profiles \
+            --destination build-system/fake-codesigning/gen-profiles \
+            --certs build-system/fake-codesigning/certs \
+            --bundleId "$BUNDLE_ID"
+          cp build-system/fake-codesigning/gen-profiles/*.mobileprovision build-system/fake-codesigning/profiles/
+          rm -rf build-system/fake-codesigning/gen-profiles
           python3 -u build-system/Make/Make.py \
             --bazelUserRoot="$BAZEL_USER_ROOT" \
             --cacheDir="/Users/Shared/bazel-cache" \
